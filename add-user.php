@@ -25,6 +25,7 @@ $debug=true ;
 
 <script type="text/javascript">
 $(document).ready(function(){
+	show_corp_text("<?php echo $customer_profile;?>");
 	$("#u_email").change(function(){
 		var username = $("#u_email").val();
 		var msgbox = $("#status");
@@ -66,8 +67,8 @@ function validateForm()
 </script>
 
 <script>
-function show_corp_text() {
-    if($("#cust_type").val() == "Corporate")
+function show_corp_text(profile_type) {
+    if(profile_type == "Corporate")
 	{
 		$(".corporate_text").show();
 		$(".individual_text").hide();
@@ -124,17 +125,17 @@ function show_corp_text() {
 
 <form class="form-horizontal" style="margin-left:10%;" method="POST" onSubmit="return validateForm(this)">
 <div class="form-group row">
-  <label class="control-label col-md-2" for="cust_type">Customer Type<span style="color:red">*</span></label>  
+  <!--<label class="control-label col-md-2" for="cust_type">Customer Type<span style="color:red">*</span></label>  
   <div class="col-md-3">
 	<select class="form-control" name="cust_type" id="cust_type" required=required onchange="show_corp_text();">
 		<?php 
-	 for ($i=0;$i<count($customer_type); $i++)
+	 /*for ($i=0;$i<count($customer_type); $i++)
 	 {
 		 echo "<option value='$customer_type[$i]'>$customer_type[$i]</option>" ;
-	 }
+	 }*/
 		?>
     </select> 
-  </div>
+  </div>-->
   
   <label class="control-label col-md-2"  for="u_email">E-mail ID<span style="color:red">*</span></label>  
   <div class="col-md-3">

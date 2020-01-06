@@ -1,3 +1,4 @@
+
 <?php
 	error_reporting(1);
 	session_start();
@@ -32,8 +33,9 @@
 <script>
     $(document).ready(function(){
 	
+profile_type = ("#user_type").val() ; 
 
-	if($("#cust_type").val() == "Individual")
+	if($(profile_type == "Individual")
 	{
 		$(".corporate_text").hide();
 		$(".individual_text").show();

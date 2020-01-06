@@ -72,7 +72,10 @@
 			autoclose: true,
 		}) ;
 
-	if($("#user_name").val() == "Individual")
+		profile_type = ("#user_type").val() ; 
+
+	if($(profile_type == "Individual")
+
 	{
 		$(".corporate_text").hide();
 		$(".individual_text").show();
@@ -102,7 +105,7 @@
 	<div class="form-group row">
 	<label class="control-label col-md-2" for="cust_type">Customer Type</label>  
   <div class="col-md-3">
-	<input  name="user_name" id="user_name" value="<?php echo $rec['cust_type']; ?>" class="form-control input-md" type="text" readonly>
+	<input  name="user_type" id="user_type" value="<?php echo $rec['cust_type']; ?>" class="form-control input-md" type="text" readonly>
   </div>
   
 	<label class="control-label col-md-2"  for="user_email">E-mail ID</label>  

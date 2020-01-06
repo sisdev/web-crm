@@ -111,7 +111,7 @@ function isNumber(evt) {
   <div class="row" style="margin-top:50px;">
   <div class="col-md-2">
   <ul class="pager">
-   <li class="previous"><a href="javascript:history.go(-1)"><< Back</a></li>
+   <li class="previous"><a href="javascript:history.go(-1)"> Back</a></li>
    </ul>
    </div>
   <div class="col-md-8">

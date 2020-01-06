@@ -7,7 +7,53 @@ include 'include/param.php';
 checksession();
 
 
+$existing_record=false ;
+if(isset($_POST['cus_submit']))
+{
+    $sel_qry = "" ; 
+	$type=$_POST['cus_qry_type'];
+	$value=$_POST['cus_value'];
+    
+ 
+	if ($type == "User ID"){
+		$sel_qry = "Select * from User_profile where Id = '$value'" ;
+	}
+	else if ($type == "Email ID"){
+		$sel_qry = "Select * from User_profile where email= '$value'" ;
+	}
+	else if ($type == "Phone Number"){
+	    $sel_qry = "Select * from User_profile where phone_main= '$value'" ;	
+	
+	}
+	//echo $sel_qry ; 
+   $rs = mysqli_query($conn, $sel_qry);
+   
+   $num_rows= mysqli_num_rows($rs);
+     if($num_rows==0)
+	 {
+		 echo "No existing customer found with $type =$value";
+	 }
+	   else {
+		   $existing_record=true;
+		   echo"record found";
+		   $row = mysqli_fetch_array($rs);
+		
+		  
+		   
+		   
+		   
+	   }
+}
+
+
+  
+  
+
+
+	
 ?>
+
+
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -105,6 +151,32 @@ function isNumber(evt) {
             }
         }	
 </script>
+	<style>
+.collapsible {
+  background-color: #ccf2ff;
+  color: #337ab7;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: center;
+  outline: none;
+  font-size: 35px;
+}
+
+.active, .collapsible:hover {
+  background-color: #ccf2ff;
+}
+
+.content {
+  padding: 0 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #ccf2ff;
+  margin-top: 10px;
+}
+</style>
 </head>
 
 
@@ -115,26 +187,63 @@ function isNumber(evt) {
 	</div>
 
 <div style="margin-top:80px;">
-  <h2 class="text-primary text-center"> Add Lead</h2>
+  
+	<button class="collapsible">+&nbsp;&nbsp;Existing Customers</button>
+<div class="content">
+	<form class="form-horizontal" style="margin-left:10%;" method="POST" >
+
+ <div class="form-group row">
+   <label class="control-label col-md-2" for="c_source">Existing Customers<span style="color:red">*</span></label>  
+  <div class="col-md-3">
+	<select class="form-control" name="cus_qry_type" required=required>
+		<?php 
+	 for ($i=0;$i<count($customer_qry); $i++)
+	 {
+	 echo "<option value='$customer_qry[$i]'>$customer_qry[$i]</option>" ;
+	 }
+		?>
+	</select>
+  </div> 
+  <label class="control-label col-md-2"  for="value" style="margin-right: 10px;">Enter<span style="color:red">*</span></label>  
+  <div class="col-md-3">
+	<input name="cus_value" id="value"    class="form-control input-md" type="text">
+  </div>
+
+	
+	    <input type="submit" name="cus_submit" class="btn btn-info" value="submit" style="padding:5px 2%;"/>
+	</div>
+	</form>
+</div>
 </div>  
     
 
 <form class="form-horizontal" style="margin-left:10%;" method="POST" onSubmit="return validateForm(this)">
+	
+	
+	
+	
+	
+	
+	
+	<div style="margin-top:30px;">
+  <h2 class="text-primary text-center"> Add Lead</h2>
+</div> 
+	
 <div class="form-group row">
   <label class="control-label col-md-2"  for="c_mob">Mobile<span style="color:red">*</span></label>  
   <div class="col-md-3">
-	<input  name="c_mob" id="c_mob" required=required onkeypress="return isNumber(event)" maxlength="10" class="form-control input-md" type="text">
+	<input  name="c_mob" value="<?php if ($existing_record) echo $row ['phone_main'];?>" id="c_mob" required=required maxlength="10" class="form-control input-md" type="number" >
   </div>
   <label class="control-label col-md-2"  for="c_name">Name<span style="color:red">*</span></label>  
   <div class="col-md-3">
-	<input name="c_name" id="c_name" required=required  onkeypress="return onlyAlphabets(event,this);" maxlength="20" class="form-control input-md" type="text">
+	<input name="c_name" id="c_name" required=required  onkeypress="return onlyAlphabets(event,this);" maxlength="20"  class="form-control input-md" type="text" value="<?php if ($existing_record) echo $row['name'];?>">
   </div>
 </div>
 
 <div class="form-group row">
   <label class="control-label col-md-2"  for="c_email">Email ID</label>  
   <div class="col-md-3">
-	<input  name="c_email" id="c_email" class="form-control input-md" type="email">
+	<input  name="c_email" id="c_email" class="form-control input-md" type="email" value="<?php if ($existing_record) echo $row['email'];?>">
   </div>
 
  <label class="control-label col-md-2" for="c_source">Query Source<span style="color:red">*</span></label>  
@@ -188,16 +297,16 @@ function isNumber(evt) {
   </div>
     </div>
 
-<h3 class="text-primary" >Address Info</h3>
+<h2 class="text-primary text-center" >Address Info</h2>
 <div class="form-group row">
  <label class="control-label col-md-2"  for="comp_name">Company Name</label>  
   <div class="col-md-3">
-	<input name="comp_name" id="comp_name" class="form-control input-md" type="text">
+	<input name="comp_name" id="comp_name" class="form-control input-md" type="text" value="<?php if ($existing_record) echo $row['comp_name'];?>">
   </div>
   
   <label class="col-md-2 control-label" for="indus_seg">Industry Segment</label>  
   <div class="col-md-3">
-	<input  name="indus_seg" id="indus_seg" class="form-control input-md" type="text">
+	<input  name="indus_seg" id="indus_seg" class="form-control input-md" type="text" value="<?php if ($existing_record) echo $row['indus_seg'];?>">
   </div>
 
 </div>
@@ -205,12 +314,12 @@ function isNumber(evt) {
 <div class="form-group row">
  <label class="control-label col-md-2"  for="indus_subseg">Industry Subsegment</label>  
   <div class="col-md-3">
-	<input name="indus_subseg" id="indus_subseg" class="form-control input-md" type="text">
+	<input name="indus_subseg" id="indus_subseg" class="form-control input-md" type="text" value="<?php if ($existing_record) echo $row['indus_subseg'];?>">
   </div>
   
 <label class="col-md-2 control-label" for="c_street"> Address Line 1<span style="color:red">*</span></label>  
   <div class="col-md-3">
-	<input  name="c_street" id="c_street" class="form-control input-md" type="text">
+	<input  name="c_street" id="c_street" class="form-control input-md" type="text" value="<?php if ($existing_record) echo $row['cur_add'];?>">
   </div>
 </div>
 
@@ -320,36 +429,32 @@ mysqli_query($conn,$insert_sql) or die(mysqli_error($conn));
 }
 
 ?>
+	
+	
+	
+	
 
-<script>
-$(document).ready(function(){
-    var phone="<?php echo $cphone; ?>" ;
-    var name="<?php echo $cname; ?>" ;
-    var email="<?php echo $cemail; ?>";
-    var comp="<?php echo $ccomp; ?>";
-    var indus_seg="<?php echo $cseg; ?>";
-    var indus_subseg="<?php echo $csubseg; ?>";
-    var street="<?php echo $cstreet; ?>";
-    var sector="<?php echo $csector; ?>";
-    var market="<?php echo $cmarket; ?>";
-    var city="<?php echo $ccity; ?>";
-    var district="<?php echo $cdist; ?>";
-    var remark="<?php echo $cremk; ?>";
-	document.getElementById("c_mob").value = phone;
-	document.getElementById("c_name").value = name;
-	document.getElementById("c_email").value = email;
-	document.getElementById("comp_name").value = comp;
-	document.getElementById("indus_seg").value = indus_seg;
-	document.getElementById("indus_subseg").value = indus_subseg;
-	document.getElementById("c_street").value = street;
-	document.getElementById("c_sector").value = sector;
-	document.getElementById("c_market").value = market;
-	document.getElementById("c_city").value = city;
-	document.getElementById("c_distict").value = district;
-    document.getElementById("c_remark").value = remark;
-});
-</script>
+
+	
+
 </div>
+	<script>
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } 
+  });
+}
+</script>
+	
 <div style="margin-top:95px;">
 		<?php include("footer.inc.php");?>
 	</div>

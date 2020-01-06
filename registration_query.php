@@ -19,7 +19,7 @@
 		$base_qry=$base_qry." and email LIKE '%".$email."%'";
 	}
 	if(isset($_POST['reg_year']) && $_POST['reg_year']!= NULL){
-		$base_qry=$base_qry." and enroll_dtm LIKE '%".$reg_year."%'";
+		$base_qry=$base_qry." and reg_id LIKE '%".$reg_year."%'";
 	}
     if(isset($_POST['product']) && $_POST['product']!= NULL ){
 		$base_qry=$base_qry." and course_name LIKE '%".$product."%'" ;	
@@ -74,7 +74,7 @@ th {
 		<th style='color:#b30059; text-align:center;'>Email ID </th>		
 		<th style='color:#b30059; text-align:center;'>Enroll Date </th>
 		<th style='color:#b30059; text-align:center;'>Product</th>
-		<th style='color:#b30059; text-align:center;'>Product price</th>
+		<th style='color:#b30059; text-align:center;'>Product prise</th>
 		<th style='color:#b30059; text-align:center;'>Payment Status</th>
 		<th style='color:#b30059; text-align:center;'>Batch ID </th>
 		<th style='color:#b30059; text-align:center;'>View Profile</th>
@@ -88,7 +88,7 @@ th {
 		<th style='color:#b30059; text-align:center;'>Email ID </th>		
 		<th style='color:#b30059; text-align:center;'>Enroll Date </th>
 		<th style='color:#b30059; text-align:center;'>Product</th>
-		<th style='color:#b30059; text-align:center;'>Product price</th>
+		<th style='color:#b30059; text-align:center;'>Product prise</th>
 		<th style='color:#b30059; text-align:center;'>Payment Status</th>
 		<th style='color:#b30059; text-align:center;'>Batch ID </th>
 		<th style='color:#b30059; text-align:center;'>View Profile</th>
