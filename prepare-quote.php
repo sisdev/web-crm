@@ -29,17 +29,25 @@ if(isset($_POST['submit']))
   $discount=$_POST['discount'];
   $final_rate=$_POST['final_rate'];
   $amount = $_POST['amount'];
+  $gst_array = fetchGST($conn, $product_id);
+ 
+	$gst_per = $gst_array[0];
+	$hsn_sac = $gst_array[1];
+	echo "1233:". $gst_per .":". $hsn_sac;
+ $gst_amt = ($final_rate * $gst_per)/100 ;
+	echo "2345:", $gst_amt ;
+	
+	
  
     $query = '
-     INSERT INTO lead_quote(lead_id, product_name, description, qty, std_rate, discount, final_rate, amount) 
-     VALUES("'.$lead_id.'","'.$product_id.'","'.$description.'", "'.$qty.'", "'.$std_rate.'", "'.$discount.'", "'.$final_rate.'", "'.$amount.'");
-     ';
-    // echo $query;
+     INSERT INTO lead_quote(lead_id, product_name, description, qty, std_rate, discount, final_rate, amount,hsn_code, gst_per, gst_amt) 
+     VALUES("'.$lead_id.'","'.$product_id.'","'.$description.'", "'.$qty.'", "'.$std_rate.'", "'.$discount.'", "'.$final_rate.'","'.$amount.'", "'.$hsn_sac.'", "'.$gst_per.'","'.$gst_amt.'");';
+     echo $query;
      $result = mysqli_query($conn, $query);
       
      if ($result==false){
      $error=mysqli_error($conn) ;
-     echo "<BR>Error in Insert".$error ;
+     echo "<BR>Error in Insert".$error;
      die($error) ;
       }
       echo "<meta http-equiv='refresh' content='0'>";
@@ -48,6 +56,33 @@ if(isset($_POST['submit']))
      // header("Location: work-request-estimation-quote.php");
   }
 
+?>
+
+<?php
+function fetchGST($conn ,$item_code)
+{
+ $query = "SELECT hsn_code,gst FROM product_group pg where pg.id = (select grp_id from product_item pi where  pi.id = $item_code)";
+	echo "fetchGST:". $query ;
+	$ret_array = array(0,0);
+
+    $result = mysqli_query( $conn, $query);
+	$num_rows = mysqli_num_rows($result);
+	if ($num_rows ==0)
+	{
+		$gst_pct = 0 ;
+	}
+	else
+	{
+		$row = mysqli_fetch_array($result);
+		$gst_pct = $row['gst'];
+		$hsn_code = $row['hsn_code'];
+		$ret_array[0] = $gst_pct ;
+		$ret_array[1] = $hsn_code;
+	}
+
+        return $ret_array;	
+}
+	
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -189,22 +224,21 @@ function confirmCompletion(){
   <div class="col-md-9">
 <form class="form-horizontal" action = "print-quote.php" method="GET" target="_xyz">
   <div class="form-group row">
+
   <label class="checkbox-inline col-md-2"><input type="checkbox" name="discount_show" value="1">Show Discount</label>
    <label class="control-label col-md-1" for="name" >GST</label>  
   <div class="col-md-1">
  <input type="text" class="form-control input-sm" value="18" name="gst" />
 </div>
-   <label class="control-label col-md-2" for="name" >Quote Date</label>  
-   <input class="form-control-static col-md-2" type="text" id="datePick" name="quote_date" value="<?php echo substr($dtm,0,10); ?>" readonly/>
   <input type = "hidden" name ="view_id" value ="<?php echo $lead_id; ?>" />
-  <input type="submit" value="Quote Preview" class="btn btn-info" style="margin-left: 10px; border-radius:0; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);">
+  <input type="submit" value="Quote Preview" class="btn btn-info" style="border-radius:0; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);">
 </div>
 </form> 
 </div>
 
-</form>
+
 </div>
-<hr style="border: 1px solid black; width:100%;">
+	  <hr style="border: 1px solid black; width:100%;">
 
 <div class="col-md-12">
 <table id="editable_table" class="table table-bordered table-striped">
@@ -315,14 +349,15 @@ function confirmCompletion(){
     <input type="reset"  name="Reset" class="btn" value="Cancel"  onClick="window.location.reload();" style="padding:10px 3%; border-radius:0; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);"/>
   </div>
 </div>
+	 </div>
 </form>
-</div>
+
   
 
 <div style="position:absolute; width:100%; left:0; right:0; margin-top: 177px;">
     <?php include("footer.inc.php"); ?>
     </div>
-</div>
+
 
 <script>  
 $(document).ready(function(){  
@@ -335,7 +370,7 @@ $(document).ready(function(){
       restoreButton:false,
       onSuccess:function(data, textStatus, jqXHR)
       {
-//  console.log(data) ;
+  //  console.log(data) ;
 //alert("11111") ;
 //alert(textStatus) ;
 //alert(jqXHR.responseText );   
@@ -354,6 +389,7 @@ $(document).ready(function(){
 
 });  
  </script>
+	</div>
 
 </body>
 </html>

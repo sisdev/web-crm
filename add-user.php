@@ -125,21 +125,16 @@ function show_corp_text(profile_type) {
 
 <form class="form-horizontal" style="margin-left:10%;" method="POST" onSubmit="return validateForm(this)">
 <div class="form-group row">
-  <!--<label class="control-label col-md-2" for="cust_type">Customer Type<span style="color:red">*</span></label>  
+  <label class="control-label col-md-2" for="cust_type">Customer Type<span style="color:red">*</span></label>  
   <div class="col-md-3">
 	<select class="form-control" name="cust_type" id="cust_type" required=required onchange="show_corp_text();">
-		<?php 
-	 /*for ($i=0;$i<count($customer_type); $i++)
-	 {
-		 echo "<option value='$customer_type[$i]'>$customer_type[$i]</option>" ;
-	 }*/
-		?>
-    </select> 
-  </div>-->
-  
+	<input class="form-control" name="cust_type" id="cust_type" required=required value="<?php echo $customer_profile; ?>" >
+</div>
   <label class="control-label col-md-2"  for="u_email">E-mail ID<span style="color:red">*</span></label>  
   <div class="col-md-3">
-	<input  name="u_email" id="u_email" class="form-control input-md" type="email"><span id="status"></span></input>
+	<input  name="u_email" id="u_email" class="form-control input-md" type="email">
+	  <span id="status"></span>
+	
   </div> 
 </div>
 
@@ -180,7 +175,7 @@ function show_corp_text(profile_type) {
 <label class="control-label col-md-2" for="u_dob">Date of Birth<span style="color:red">*</span></label>  
   <div class="col-md-3">
   <div class="input-group">
-	<input class="form-control" name="u_dob" class="form-control input-md" type="text">
+	<input class="form-control" name="u_dob" class="form-control input-md" type="date">
 	 <div class="input-group-addon">
          <i class="fa fa-calendar">
          </i>
@@ -256,6 +251,27 @@ function show_corp_text(profile_type) {
   </div>
 </div>
 </div>
+															 
+															 
+
+	<div class="form-group row"> 
+ <label class="control-label col-md-2" for="state">State<span style="color:red">*</span></label>  
+  <div class="col-md-3">
+	<select class="form-control" name="state">
+		<?php 
+	 for ($i=0;$i<count($state); $i++)
+	 {
+		 echo "<option value='$state[$i]'>$state[$i]</option>" ;
+	 }
+		?>
+  </select>  
+  </div>
+  
+<label class="control-label col-md-2" for="pin_code">Pin_code</label>  
+  <div class="col-md-3">
+	<input  name="pin_code"   class="form-control input-md" type="text">
+  </div> 
+</div> 														 
 
 
 <div class="form-group row">
@@ -297,6 +313,8 @@ if(isset($_GET['view_id']))
 	$ccity=$row['add_city'];
 	$cdist=$row['add_distict'];
 	$uaddress = $row['add_street']." ".$row['add_sector']." ".$row['add_market']." ".$row['add_city']." ".$row['add_distict'];
+	$segment = $row['indus_seg'];
+	$sub_segment = $row['indus_subseg'];
 	//echo $cphone;
 }
 else{
@@ -311,6 +329,8 @@ else{
 	$ccity="";
 	$cdist="";
 	$uaddress ="";
+	$segment = "";
+	$sub_segment = "";
 }
 
 if(isset($_POST['u_submit']))
@@ -319,12 +339,14 @@ if(isset($_POST['u_submit']))
 	$u_email=$_POST['u_email'];
 	$u_mob_primary=$_POST['u_mob_primary'];
 	$u_name=$_POST['u_name'];
-	$u_dob=$_POST['u_dob'];
+	//$u_dob=$_POST['u_dob'];
 	$u_gender=$_POST['u_gender'];
 	$m_status=$_POST['m_status'];
 	$u_fname=$_POST['u_fname'];
 	$u_country=$_POST['u_country'];
 	$u_caddress=$_POST['u_caddress'];
+	$state=$_POST['state'];
+	$pin_code=$_POST['pin_code'];
 	$u_paddress=$_POST['u_paddress'];
 	$u_qualification=$_POST['u_qualification'];
 	$u_experience=$_POST['u_experience'];
@@ -336,12 +358,12 @@ if(isset($_POST['u_submit']))
 	$gst_num=$_POST['gst_num'];
 	$created_by=$_SESSION['login'];
 	
-	$insert_user_profile_qry="insert into user_profile(cust_type,email,phone_main,name,father_name,gender,dob,marital_status,cur_add,perm_add,citizen_country,phone_alt,qualification,experience,comp_name,indus_seg,indus_subseg, gstin,update_dtm, created_by, update_ip)
- values('$cust_type','$u_email','$u_mob_primary','$u_name','$u_fname','$u_gender','$u_dob','$m_status','$u_caddress','$u_paddress','$u_country','$u_mob_alternate','$u_qualification','$u_experience','$comp_name','$seg','$subseg','$gst_num','$dtm','$created_by','.$_SERVER[REMOTE_ADDR].') " ;
+	$insert_user_profile_qry="insert into user_profile(cust_type,email,phone_main,name,father_name,gender,marital_status,cur_add,state,pin_code,perm_add,citizen_country,phone_alt,qualification,experience,comp_name,indus_seg,indus_subseg, gstin,update_dtm, created_by, update_ip)
+ values('$cust_type','$u_email','$u_mob_primary','$u_name','$u_fname','$u_gender','$m_status','$u_caddress','$state','$pin_code','$u_paddress','$u_country','$u_mob_alternate','$u_qualification','$u_experience','$comp_name','$seg','$subseg','$gst_num','$dtm','$created_by','.$_SERVER[REMOTE_ADDR].') " ;
 
-    if ($debug)  //echo $insert_user_profile_qry ;	
+    if ($debug) //echo $insert_user_profile_qry ;	
 	$result= mysqli_query($conn,$insert_user_profile_qry) ;
-	header("location:manage-user.php");
+	//header("location:manage-user.php");
 	if ($result==false){
 		$error=mysqli_error($conn) ;
 		//echo "<BR>Error in Insert user_profile".$error ;
@@ -359,11 +381,16 @@ $(document).ready(function(){
     var email="<?php echo $uemail; ?>";
     var comp="<?php echo $ucomp; ?>";
     var address = "<?php echo $uaddress; ?>";
+	var segment = "<?php echo $segment; ?>" ;
+	var sub_segment = "<?php echo $sub_segment ; ?>" ;
 	document.getElementById("u_mob_primary").value = phone;
 	document.getElementById("u_name").value = name;
 	document.getElementById("u_email").value = email;
 	document.getElementById("comp_name").value = comp;
 	document.getElementById("u_caddress").value = address;
+	document.getElementById("indus_seg").value = segment ;
+	document.getElementById("indus_subseg").value = sub_segment ;
+	
 	$("#cust_type").val("Corporate").change();
 });
 </script>
@@ -375,3 +402,9 @@ $(document).ready(function(){
 
 </body>
 </html>
+
+
+
+<html jfje
+	  
+	  

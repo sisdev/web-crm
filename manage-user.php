@@ -4,6 +4,7 @@
 	session_start();
 	include 'include/dbi.php';
 	include 'include/session.php';
+    include 'include/param.php';
 	checksession();
 	
 	$i=1;
@@ -87,7 +88,7 @@ th {
 	<thead>
 		<th style='color:#b30059; text-align:center;'>#</th>
 		<th style='color:#b30059; text-align:center;'>Cust_Type</th>
-		<th style='color:#b30059; text-align:center;'>User Profile Id</th>
+		<th style='color:#b30059; text-align:center;'>Customer Id</th>
 		<th style='color:#b30059; text-align:center;'>Name</th>
 		<th style='color:#b30059; text-align:center;'>Email ID </th>		
 		<th style='color:#b30059; text-align:center;'>Phone</th>
@@ -95,9 +96,17 @@ th {
 		<th style='color:#b30059; text-align:center;'>Company</th>
 		<th style='color:#b30059; text-align:center;'>Seg/ Subseg</th>
 		<th style='color:#b30059; text-align:center;'>Date</th>
-		<th style='color:#b30059; text-align:center;'>View User</th>
-		<th style='color:#b30059; text-align:center;'>Update User</th>
-		<th style='color:#b30059; text-align:center;'>Add Registration</th>
+		<th style='color:#b30059; text-align:center;'> User</th>
+		
+		<th style='color:#b30059; text-align:center;'>Deal</th>
+		<?php 
+	                        	
+		                          if ($tally_interface == "Y"){
+							?>
+		<th style='color:#b30059; text-align:center;'>Tally Ledger</th>
+		<?php 
+								  }
+		?>
 	</thead>
 
 	<?php
@@ -122,20 +131,39 @@ th {
 							<input type = "hidden" name ="view_id" value ="<?php echo $row['id']; ?>"/>
 							<input type="submit" class="btn btn-info" role="button" value="View" style="border-radius:0; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);"/>
 						</form>
-					</td>
-					
-					<td>
 						<form action = "user-record-update.php" method="GET" >
 							<input type = "hidden" name ="update_id" value ="<?php echo $row['id']; ?>"/>
 							 <input type="submit" class="btn btn-primary" value="Update" style="border-radius:0; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);"/>
 						</form>
 					</td>
+				
 					<td>
 						<form action = "add-registration.php" method="GET" >
 							<input type = "hidden" name ="add_id" value ="<?php echo $row['id']; ?>"/>
 							 <input type="submit" class="btn btn-warning" value="Add" style="border-radius:0; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);"/>
 						</form>
 					</td>
+					
+					
+						
+							<?php 
+	                        	
+		                          if ($tally_interface == "Y"){
+							?>
+					        <td>
+							<form action = "tally-ledger.php" method="GET" >
+							<input type = "hidden" name ="add_gst" value ="<?php echo $row['id']; ?>"/>
+							<input type="submit" class="btn btn-warning" value="Export" style="border-radius:0; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);"/>
+							</form>
+							</td>
+							<?php
+	                               	}
+	                            	
+		
+							
+								?>
+						
+					
 					
 				</tr>
 				</tbody>

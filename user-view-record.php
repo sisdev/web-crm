@@ -170,6 +170,21 @@ profile_type = ("#user_type").val() ;
   </div>
 </div>
 </div>
+	
+	<div class="form-group row">
+<div class="corporate_text">
+<label class="control-label col-md-2" for="gst">State</label>  
+  <div>
+	<input  name="gst" class="form-control-static col-md-4" type="text" readonly value="<?php echo $rows['state']; ?>">
+  </div>
+  </div>
+
+  <label class="col-md-2 control-label" for="u_caddress">Pin_Code</label>  
+  <div>
+	<input  name="gst" class="form-control-static col-md-4" type="text" readonly value="<?php echo $rows['pin_code']; ?>">
+  </div>
+	</div>
+	
 
 <div class="individual_text" style="display:none;" >
 <div class="form-group row">

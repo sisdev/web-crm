@@ -3,13 +3,13 @@ session_start();
 include 'include/session.php';
 include 'include/dbi.php';
 include 'include/param.php';
+//include 'fpd/email.php';
 $dtm = getLocalDtm();
 
 $i = 1;
 if(isset($_GET['view_id'])){
   $lead_id = $_GET['view_id'];
   $gst = $_GET['gst'];
-  $quote_dt = $_GET['quote_date'];
   if(empty($_GET['discount_show']) && isset($_GET['discount_show'])){
   $discount_show = $_GET['discount_show'];
 }
@@ -19,19 +19,59 @@ $lead_row = mysqli_fetch_array($lead_result);
 $wr_query = "SELECT product_item.prod_name, lead_quote.id, lead_quote.description, lead_quote.qty, lead_quote.std_rate, lead_quote.discount, lead_quote.final_rate, lead_quote.amount from product_item JOIN lead_quote ON product_item.id=lead_quote.product_name where lead_quote.lead_id='$lead_id'";
 $work_quote_result = mysqli_query($conn, $wr_query);
 }
-?>
-<html>
-<head>
-  <link rel="icon" type="image/png" href="images/icon.png" />
-  <title><?php echo "Quote".$lead_row['id']; ?></title>
 
-<meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+if(isset($_POST['submit']))
+{
+  $product_id=$_POST['product_id'];
+  $description=$_POST['description'];
+  $qty=$_POST['qty'];
+  $std_rate=$_POST['std_rate'];
+  $discount=$_POST['discount'];
+  $final_rate=$_POST['final_rate'];
+  $amount = $_POST['amount'];
+  $gst_array = fetchGST($conn, $product_id);
+ 
+	$gst_per = $gst_array[0];
+	$hsn_sac = $gst_array[1];
+	echo "1233:". $gst_per .":". $hsn_sac;
+ $gst_amt = ($final_rate * $gst_per)/100 ;
+	echo "2345:", $gst_amt ;
+	
+	
+ 
+    $query = '
+     INSERT INTO lead_quote(lead_id, product_name, description, qty, std_rate, discount, final_rate, amount,hsn_code, gst_per, gst_amt) 
+     VALUES("'.$lead_id.'","'.$product_id.'","'.$description.'", "'.$qty.'", "'.$std_rate.'", "'.$discount.'", "'.$final_rate.'","'.$amount.'", "'.$hsn_sac.'", "'.$gst_per.'","'.$gst_amt.'");';
+     echo $query;
+     $result = mysqli_query($conn, $query);
+      
+     if ($result==false){
+     $error=mysqli_error($conn) ;
+     echo "<BR>Error in Insert".$error;
+     die($error) ;
+      }
+      echo "<meta http-equiv='refresh' content='0'>";
+     // echo"<script>document.location.reload(true); </script>";
+      //exit();
+     // header("Location: work-request-estimation-quote.php");
+  }
+  
 
-<style>
+
+
+
+$html_str = "";
+$html_str .= "<html>";
+$html_str .= "<head>" ;
+$html_str .= '<link rel="icon" type="image/png" href="images/icon.png" />';
+$html_str .= '  <title>Quote'.$lead_row["id"].'</title>';
+$html_str .= '<meta charset="utf-8">';
+ $html_str .= '<meta name="viewport" content="width=device-width, initial-scale=1">';
+$html_str .= '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">';
+ $html_str .= '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>';
+ $html_str .= '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>';
+
+$html_str .= "<style>
 #print th, #print td{
 border: 1px solid black;
 border-collapse: collapse;
@@ -77,89 +117,96 @@ body{
    #print_btn{
        display:none !important;
    }
+   #email_btn{
+   display:none !important;
+   }
 }
-</style>
+</style>";
 
-<script>
+$html_str .="<script>
 function printBill(){
   window.print();
 }
-</script>
-</head>
+</script>";
 
-<body>
-<page class="A4">
-<div class="lead_row">
+
+
+$html_str .= "</head>";
+
+$html_str .= "<body>";
+$html_str .= '<page class="A4">';
+$html_str .= '<div class="lead_row">
 <div align="center"><u><b>QUOTATION</b></u></div>
-</div>
+</div> <br/>';
 
-<table style="width:98%; margin-left: 1%;" border="1">
-  <tr>
-    <td>
-      <table border="1" style="float: right; height: 90px; margin-top: 37px;">
-      <tr>
-      <th style="padding: 2px;">Quotation No:</th> <td style="padding: 2px;"><?php echo $lead_row['id']; ?></td>
-      </tr>
-      <tr>
-      <th style="padding: 2px;">Date: </th><td style="padding: 2px;"> <?php echo $quote_dt; ?></td>
-      </tr>
-      </table>
+$html_str .= '<table style="width:97%; margin-left: 1%;" border="1">';
+  $html_str .= '<tr>';
+    $html_str .= '<td>';
+     $html_str .= '<span style="float:right; ">Mobile No: '.$org_phone1.'</span>';
+//     $html_str .= '<table border="1" style="float: right; height: 70px; margin-top: 37px;">';   
+//      $html_str .= '<tr>';
+//      $html_str .= '</tr>';
+//      $html_str .= '<tr>';
+//      $html_str .= '</tr>';
+//      $html_str .= '</table>';
 
-      <span style="">GSTIN: <b>09AAOCS7654P3Z5</b></span>
-      <span style="float: right;">Mobile No: 9999283283</span><br>
+      $html_str .= '<span style="">GSTIN: '.$org_gstin.'</span>';
+      //$html_str .= '<span style="float: right; text-align:20px;">Mobile No: '.$org_phone1.'</span><br>';
      
-     <br>
-      <div align="center" >
-      <b style=" font-size: 19px;">Sisoft Technologies</b>
-      </div>
-      <div align="center" style="font-size: 12px;">
-        SRC E7-E8, Shipra Riviera, Gyan Khand-3,Indirapuram
-      </div>
-	  <div align="center" style="font-size: 12px;">
-         Ghaziabad - 201014
-      </div>
-      <br>
-      <span style="font-size: 13px; font-weight: bold;"></span><br>
-      <span style="font-size: 13px; font-weight: bold;"></span>
+     $html_str .= '<br>';
+      $html_str .= '<div align="center" >';
+      $html_str .= '<b style=" font-size: 19px;">'.$org_name.'</b>';
+      $html_str .= '</div>';
+      $html_str .= '<div align="center" style="font-size: 12px;">
+        '.$org_address1.'<br>'.$org_address2.'
+      </div>';
+//      $html_str .= '<br>';
+//      $html_str .= '<span style="font-size: 13px; font-weight: bold;">'.$lead_row["name"].'</span><br>';
+//      $html_str .= '<span style="font-size: 13px; font-weight: bold;">'.$lead_row["emailID"].'</span><br>';
+//      $html_str .= '<span style="font-size: 13px; font-weight: bold;">'.$lead_row["comp_name"].'</span>';
     
-    </td>
+   $html_str .= '</td>';
     
-  </tr>
+  $html_str .= '</tr>';
 
   
-</table>
+$html_str .= '</table>';
 
-      <br>
-      &nbsp;&nbsp;&nbsp;To,<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Mr. <?php echo $lead_row['name']; ?></b><br>
-	  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b> <?php echo $lead_row['comp_name']; ?></b><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $lead_row['add_street'].",".$lead_row['add_city']; ?>
-      <br>
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sub</b>: Quotation <br><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dear Sir <br>
+      $html_str .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;<b> Quotation No: </b>'.$lead_row["id"];
+      
+      $html_str .= '<style="float: right;> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Date:</b> '.SUBSTR($lead_row["req_dtm"],0,10).'<br></style>';
+
+      $html_str .= '<br> &nbsp;&nbsp;&nbsp;To,<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>'.$lead_row["name"].'</b><br>';
+	  $company_name = $lead_row["comp_name"] ; 
+	  if (!empty($company_name))
+				$html_str .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$company_name ;
+      $html_str .= '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$lead_row["add_street"].','.$lead_row["add_sector"].','.$lead_row["add_city"].'  <br>      <br>';
+      $html_str .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Sub</b>: Quotation <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dear Sir/Madam <br><br>";
 
    
-<br>
-<table style="" id="print">
-  <tr>
-        <th>&nbsp;S. No.</th>
-        <th>Product Name </th>
-        <th>Description </th>
-        <th>Qty</th> 
-          <?php 
-    if(isset($_GET['discount_show'])){
-      ?>
-        <th>Std Rate</th>      
-        <th>Discount_%</th>   
-        <?php
-        }
-        ?>    
-        <th>Final Rate</th>       
-        <th>Amount</th>      
-  </tr>
 
-<?php
+$html_str .= '<table style="width:98%; margin-left: 1%;" border="1" id="print">';
+  $html_str .= '<tr>';
+        $html_str .= '<th style="text-align: center;">&nbsp;S. No.</th>';
+        $html_str .= '<th >&nbsp;&nbsp;Product Name </th>';
+        $html_str .= '<th >&nbsp;&nbsp;Description </th>';
+        $html_str .= '<th style="text-align: center;">Qty</th>';
+         
+    if(isset($_GET['discount_show'])){
+		
+      
+        $html_str .= '<th>Std Rate</th>';   
+        $html_str .= '<th>Discount_%</th>';   
+        
+        }
+          
+       $html_str .= '<th style="text-align: center;">Final Rate</th>';     
+        $html_str .= '<th style="text-align: center;">Amount</th>' ;   
+  $html_str .= '</tr>';
+
+
 
 $sub_total =0;
 
@@ -168,71 +215,91 @@ while($wr_row = mysqli_fetch_array($work_quote_result))
 {
 $sub_total += $wr_row['amount'];
 
-?>
-<tr>  
-    <td style="text-align: center;"> <?php echo $i; ?></td>
-    <td><?php echo $wr_row['prod_name']; ?></td>
-    <td><?php echo $wr_row['description']; ?></td>
-    <td><?php echo $wr_row['qty']; ?></td>
-     <?php 
-    if(isset($_GET['discount_show'])){
-      ?>
-    <td><?php echo $wr_row['std_rate']; ?></td>
-    <td style="text-align: center;"><?php echo $wr_row['discount']; ?></td>
-    <?php
-      }
-    ?>
-    <td style="text-align: center;"><?php echo $wr_row['final_rate']; ?></td>
-    <td style="text-align: center;"><?php echo $wr_row['amount']; ?></td>
-</tr>
 
-     <?php
+$html_str .= '<tr>' ; 
+    $html_str .= '<td style="text-align: center;">'.$i.'</td>';
+    $html_str .= '<td >&nbsp;&nbsp;'.$wr_row["prod_name"].'</td>';
+    $html_str .= '<td >&nbsp;&nbsp;'.$wr_row["description"].'</td>';
+    $html_str .= '<td style="text-align: center;">'.$wr_row["qty"].'</td>';
+     
+    if(isset($_GET['discount_show'])){
+     
+    $html_str .= '<td>'.$wr_row["std_rate"].'</td>';
+    $html_str .= '<td style="text-align: center;">'.$wr_row["discount"].'</td>';
+    
+      }
+   
+    $html_str .= '<td style="text-align: center;">'.$wr_row["final_rate"].'</td>';
+    $html_str .= '<td style="text-align: center;">'.$wr_row["amount"].'</td>';
+$html_str .= '</tr>';
+
+     
 
      $i++;
   }
   $gst_amt = $sub_total*($gst/100);
   $total = $sub_total+$gst_amt;
   
-   ?> 
-</table>
- <hr id="line">
+  
+$html_str .= '</table>';
 
- <table style=" width:40%; line-height: 20px;">
-<tr>
-  <td style="text-align: right;">
-    <b >Sub Total:</b> <?php echo number_format($sub_total,2); ?>
-  </td>
-</tr>
-    <?php 
+$html_str .= '<br/><br/>';   // Three lines after the table 
+
+// $html_str .= '<hr id="line">';
+
+ $html_str .= '<table style=" width:40%; line-height: 20px;">';
+$html_str .= '<tr>';
+  $html_str .= '<td style="text-align: right;">';
+    $html_str .= '<b>Sub Total:</b>'.number_format($sub_total,2).'';
+  $html_str .= '</td>';
+$html_str .= '</tr>';
+    
     if(isset($_GET['gst']) && ($_GET['gst'] != 0)){
-      ?>
-<tr>
-  <td style="text-align: right;">
-    <b>GST Amount:</b> 0<?php echo number_format($gst_amt,2); ?>
-  </td>
-</tr>
-  <?php
+     
+$html_str .= '<tr>';
+  $html_str .= '<td style="text-align: right;">';
+    $html_str .= '<b>GST Amount:</b> 0'.number_format($gst_amt,2).'';
+  $html_str .= '</td>';
+$html_str .= '</tr>';
+
   }
-  ?>
-<tr>
-  <td style="text-align: right;">
-    <b>Total:</b> <?php echo number_format($total,2); ?>
-  </td>
-</tr>
- </table>
-<br>
-<br>
-<br>
-<br>
-<div style="margin-left:25px; line-height: 25px;">
-<span >Note:</span><br>
-<span ><b>Thanking You</b></span><br>
-<span >For Sisoft Technologies Pvt Ltd</span><br>
-<span >Auth. Signatory</span><br>
-</div>
-<div style="text-align:center; margin-top:10px; margin-right: 10px;">
- <button id="print_btn" onclick="printBill()" style="padding: 10px 30px; ">Print</button>
-</div>
-</page>
-</body>
-</html>
+
+$html_str .= '<tr>';
+  $html_str .= '<td style="text-align: right;">';
+    $html_str .= '<b>Total:</b>'.number_format($total,2).'';
+  $html_str .= '</td>';
+$html_str .= '</tr>';
+ $html_str .= '</table>';
+$html_str .= '<br><br><br><br>';
+
+$html_str .= '<div style="margin-left:25px; line-height: 25px;">';
+
+$html_str .= '<span ><b>Thanking You</b></span><br>';
+
+$html_str .= '<span >For&nbsp;&nbsp;'.$org_name.'</span><br>';
+$html_str .= '<span >Auth. Signatory</span><br>';
+$html_str .= '<span >Note:</span><br>';
+$html_str .= '</div>';
+$html_str .= '<div style="text-align:center; margin-top:10px; margin-right: 10px;">';
+$html_str .= '<form action="" method="post">';
+$html_str .= '<button id="print_btn" onclick="printBill()" style="padding: 10px 30px; ">Print</button>';
+//$html_str .= '1233344444';
+$html_str .= '</form>';
+
+$html_str .= '<form action="quote_email.php" method="GET">';
+//$html_str .= '555555555555';
+$html_str .= '<input type = "hidden" name ="view_id" value ='.$lead_id.' />';
+ $html_str .= '<button id="email_btn" name ="submit" value="" style="padding: 10px 30px; ">Email</button>';
+$html_str .= '</form>';
+$html_str .= '</div>';
+///$html_str .= '</form>';	
+$html_str .= "</page>";
+$html_str .= "</body>";
+$html_str .= "</html>"; 
+echo $html_str ;
+
+
+$file = 'quote\quote_mail.html';
+$data = '$html_str';
+file_put_contents($file, $html_str);
+?>

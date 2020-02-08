@@ -16,16 +16,16 @@ if(isset($_POST['cus_submit']))
     
  
 	if ($type == "User ID"){
-		$sel_qry = "Select * from User_profile where Id = '$value'" ;
+		$sel_qry = "Select * from user_profile where id = '$value'" ;
 	}
 	else if ($type == "Email ID"){
-		$sel_qry = "Select * from User_profile where email= '$value'" ;
+		$sel_qry = "Select * from user_profile where email= '$value'" ;
 	}
 	else if ($type == "Phone Number"){
-	    $sel_qry = "Select * from User_profile where phone_main= '$value'" ;	
+	    $sel_qry = "Select * from user_profile where phone_main= '$value'" ;	
 	
 	}
-	//echo $sel_qry ; 
+	// echo $sel_qry ; 
    $rs = mysqli_query($conn, $sel_qry);
    
    $num_rows= mysqli_num_rows($rs);
@@ -36,12 +36,7 @@ if(isset($_POST['cus_submit']))
 	   else {
 		   $existing_record=true;
 		   echo"record found";
-		   $row = mysqli_fetch_array($rs);
-		
-		  
-		   
-		   
-		   
+		   $row = mysqli_fetch_array($rs);	   
 	   }
 }
 
@@ -156,12 +151,12 @@ function isNumber(evt) {
   background-color: #ccf2ff;
   color: #337ab7;
   cursor: pointer;
-  padding: 18px;
+  padding: 5px;
   width: 100%;
   border: none;
   text-align: center;
   outline: none;
-  font-size: 35px;
+  font-size: 20px;
 }
 
 .active, .collapsible:hover {
@@ -183,51 +178,46 @@ function isNumber(evt) {
 <body style="background-color:#ccf2ff">
 <div class ="container-fluid">
 	<div>
-		<?php include 'header.inc.php'; ?>
+		<?php  include 'header.inc.php'; ?>
 	</div>
 
-<div style="margin-top:80px;">
-  
-	<button class="collapsible">+&nbsp;&nbsp;Existing Customers</button>
-<div class="content">
-	<form class="form-horizontal" style="margin-left:10%;" method="POST" >
 
- <div class="form-group row">
-   <label class="control-label col-md-2" for="c_source">Existing Customers<span style="color:red">*</span></label>  
-  <div class="col-md-3">
-	<select class="form-control" name="cus_qry_type" required=required>
-		<?php 
-	 for ($i=0;$i<count($customer_qry); $i++)
-	 {
-	 echo "<option value='$customer_qry[$i]'>$customer_qry[$i]</option>" ;
-	 }
-		?>
-	</select>
-  </div> 
-  <label class="control-label col-md-2"  for="value" style="margin-right: 10px;">Enter<span style="color:red">*</span></label>  
-  <div class="col-md-3">
-	<input name="cus_value" id="value"    class="form-control input-md" type="text">
-  </div>
+	<div style="margin-top:80px;">
+		<h2 class="text-primary text-center"> Add Lead</h2>
+	</div> 
 
-	
-	    <input type="submit" name="cus_submit" class="btn btn-info" value="submit" style="padding:5px 2%;"/>
+<div style="margin-top:0px;">
+	<button class="collapsible">+&nbsp;Existing Customers</button>
+	<div class="content">
+		<form class="form-horizontal" style="margin-left:10%;" method="POST" >
+
+		<div class="form-group row">
+			<label class="control-label col-md-2" for="c_source">Query Criteria<span style="color:red">*</span></label>  
+			<div class="col-md-3">
+				<select class="form-control" name="cus_qry_type" required=required>
+					<?php 
+				 for ($i=0;$i<count($customer_qry); $i++)
+				 {
+				 echo "<option value='$customer_qry[$i]'>$customer_qry[$i]</option>" ;
+				 }
+					?>
+				</select>
+			</div> 
+			<label class="control-label col-md-2"  for="value" style="margin-right: 10px;">Enter<span style="color:red">*</span></label>  
+			<div class="col-md-3">
+				<input name="cus_value" id="value"    class="form-control input-md" type="text">
+			</div>
+
+		
+			<input type="submit" name="cus_submit" class="btn btn-info" value="submit" style="padding:5px 2%;"/>
+		</div>
+		</form>
 	</div>
-	</form>
-</div>
 </div>  
-    
+
 
 <form class="form-horizontal" style="margin-left:10%;" method="POST" onSubmit="return validateForm(this)">
-	
-	
-	
-	
-	
-	
-	
-	<div style="margin-top:30px;">
-  <h2 class="text-primary text-center"> Add Lead</h2>
-</div> 
+<h3 class="text-primary text-center" >Basic Info</h3>
 	
 <div class="form-group row">
   <label class="control-label col-md-2"  for="c_mob">Mobile<span style="color:red">*</span></label>  
@@ -297,7 +287,7 @@ function isNumber(evt) {
   </div>
     </div>
 
-<h2 class="text-primary text-center" >Address Info</h2>
+<h3 class="text-primary text-center" >Address Info</h3>
 <div class="form-group row">
  <label class="control-label col-md-2"  for="comp_name">Company Name</label>  
   <div class="col-md-3">

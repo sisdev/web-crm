@@ -302,11 +302,13 @@ if(m<10) {
 		$fetch_emailID=mysqli_query($conn, $lead_emailID_qry);
 		$fetch_emailID_array=mysqli_fetch_array($fetch_emailID);
 		$lead_email= $fetch_emailID_array['emailID'];
+		
 		$check_customer_email_qry="SELECT id,email from user_profile where email='$lead_email'";
 		$fetch_email=mysqli_query($conn, $check_customer_email_qry);
 		$fetch_email_array=mysqli_fetch_array($fetch_email);
-    $user_profile_id= $fetch_email_array['id'];
+        $user_profile_id= $fetch_email_array['id'];
 		$match_customer_email=$fetch_email_array['email'];
+		
 		$reg_email_qry="SELECT user_name from deal_log where user_name='$lead_email'";
 		$fetch_reg_email=mysqli_query($conn, $reg_email_qry);
 		$fetch_reg_array=mysqli_fetch_array($fetch_reg_email);

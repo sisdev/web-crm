@@ -330,6 +330,9 @@ echo "
       <li><a tabindex='-1' href='mytask.php'>My Pending Tasks<span class='badge' style='margin-left:2px;'>$count_task</span></a></li>
       <li><a tabindex='-1' href='all-tasks.php'>All Tasks</a></li>
     <li><a tabindex='-1' href='task-reminder.php'>Add Task</a></li>
+	<li><a tabindex='-1' href='quote-manage.php'>Manage quotation</a></li>
+	<li><a tabindex='-1' href='add-quote.php'>Add quotation</a></li>
+	
     </ul>
 </div>";
 }
@@ -373,8 +376,6 @@ if($mitem_myfiles_display){
 }
 
   if($mitem_sale_display){
-  if($r_role['role'] == 'admin'){
-	  
 echo "
 <div class='dropdown col-md-1'>
     <button class='btn btn-primary dropdown-toggle' id='btn1' type='button' data-toggle='dropdown'>DEALs
@@ -391,7 +392,6 @@ echo "
     </ul>
   </div>";
 }
-  }
 if($mitem_contact_display){
 echo "
 <div class='dropdown col-md-1' style='margin-left:-10px;'>
@@ -433,7 +433,7 @@ echo "
 }
 
 if($mitem_sales_resource_display){
-  if($r_role['role'] == 'admin'){
+  if($r_role['role'] == 'admin')
 echo "
 <div class='dropdown col-md-1' style='margin-left:-15px; width:140px;'>
     <button class='btn btn-primary dropdown-toggle sales_resource_btn' id='btn1' type='button' data-toggle='dropdown'>Sales-Resource
@@ -456,7 +456,6 @@ else{
       <li><a tabindex='-1' href='sales-resource-activity.php'>Sales/Resource Activity</a></li>
     </ul>
 </div>";
-}
 }
 if($mitem_trainer_display){
     echo "

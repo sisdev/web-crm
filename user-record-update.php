@@ -19,9 +19,11 @@
 				$name=$_POST['user_name'];
 				$father_name=$_POST['user_fname'];
 				$gender=$_POST['user_gender'];
-				$dob=$_POST['user_dob'];
+				//$dob=$_POST['user_dob'];
 				$marital_status=$_POST['user_marital_status'];
 				$cur_add=$_POST['user_cur_add'];
+		        $state=$_POST['user_state'];
+		        $pin_code=$_POST['user_pin_code'];
 				$perm_add=$_POST['user_perm_add'];
 				$citizen_country=$_POST['user_country'];
 				$phone_alt=$_POST['user_alter_mobile'];
@@ -32,7 +34,7 @@
 				$seg=$_POST['indus_seg'];
 				$subseg=$_POST['indus_subseg'];
 				$gst=$_POST['gst'];
-				$sql="UPDATE user_profile SET email='$email',name='$name',father_name='$father_name',gender='$gender',dob='$dob',marital_status='$marital_status',cur_add='$cur_add',perm_add='$perm_add',citizen_country='$citizen_country',phone_alt='$phone_alt',qualification='$qualification',experience='$experience',phone_main='$phone_main', comp_name='$comp',indus_seg='$seg', indus_subseg='$subseg', gstin='$gst' where id='$get' ";
+				$sql="UPDATE user_profile SET email='$email',name='$name',father_name='$father_name',gender='$gender',marital_status='$marital_status',cur_add='$cur_add',state='$state',pin_code='$pin_code',perm_add='$perm_add',citizen_country='$citizen_country',phone_alt='$phone_alt',qualification='$qualification',experience='$experience',phone_main='$phone_main', comp_name='$comp',indus_seg='$seg', indus_subseg='$subseg', gstin='$gst' where id='$get' ";
 				echo $sql;
 				$result=mysqli_query($conn,$sql) or die(mysqli_error($conn));
 				//echo mysqli_error($conn);
@@ -242,6 +244,20 @@
   </div>
   </div>
 </div>
+	
+	
+	
+<div class="form-group row">
+  <label class="control-label col-md-2"  for="user_state">State</label>  
+  <div class="col-md-3">
+	<input  name="user_state" id="user_state" class="form-control input-md" value="<?php echo $rec['state']; ?>">
+  </div>
+  <label class="control-label col-md-2"  for="user_pin_code">Pin_code</label>  
+  <div class="col-md-3">
+	<input name="user_pin_code" id="user_pin_code" class="form-control input-md"  value="<?php echo $rec['pin_code']; ?>">
+  </div>
+	</div>
+	
 
 
 <div class="form-group" style="margin-left:30%;">
