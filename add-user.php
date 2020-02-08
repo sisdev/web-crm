@@ -127,7 +127,6 @@ function show_corp_text(profile_type) {
 <div class="form-group row">
   <label class="control-label col-md-2" for="cust_type">Customer Type<span style="color:red">*</span></label>  
   <div class="col-md-3">
-	<select class="form-control" name="cust_type" id="cust_type" required=required onchange="show_corp_text();">
 	<input class="form-control" name="cust_type" id="cust_type" required=required value="<?php echo $customer_profile; ?>" >
 </div>
   <label class="control-label col-md-2"  for="u_email">E-mail ID<span style="color:red">*</span></label>  
