@@ -468,7 +468,8 @@ if($mitem_trainer_display){
       <li><a tabindex='-1' href='trainers.php'>Manage Trainer</a></li>
      <li class='dropdown-header'>BATCHES</li>
       <li><a tabindex='-1' href='add_batch.php'>Add Batch</a></li>
-      <li><a tabindex='-1' href='admin_view_batch.php'>Manage Batch</a></li>
+      <li><a tabindex='-1' href='batch-view.php'>Manage Batch Planned</a></li>
+	  <li><a tabindex='-1' href='batch-act-manage.php'>Manage Batch Actual</a></li>
     </ul>
 </div>";
 }

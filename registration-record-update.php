@@ -5,6 +5,12 @@
 	include 'include/session.php';
 	include 'include/param.php';
 	checksession();
+
+
+    $base_qry="SELECT batch_id FROM trng_batches_actual WHERE batch_status='Active'";
+	$rss = mysqli_query($conn,$base_qry);
+	//$rowss=mysqli_fetch_array($rss);
+   
 		
 	if(isset($_GET['update_id']))
 	{
@@ -127,7 +133,33 @@
 <div class="form-group row">
 <label class="control-label col-md-2" for="reg_batch_id"><?php echo $product_sn; ?></label>  
   <div class="col-md-3">
-	<input  name="reg_batch_id" required=required class="form-control input-md" type="text" value="<?php echo $rec['batch_id']; ?>">
+	
+		
+		
+		<?php 
+	                        	
+		                          if ($show_batches == "Y"){
+							?>
+	 <?php
+	  echo '<select   class="form-control input-md" name="reg_batch_id" >';
+ 
+              while ($rowss=mysqli_fetch_array($rss)){
+              echo "<option value='". $rowss['batch_id'] ."'>".$rowss['batch_id']."</option>" ;
+                            }
+                            echo "</select>" ;
+								  }
+	  ?>
+	  	<?php 
+	                        	
+		                          if ($show_batches == "N"){
+							?>
+		
+	<input  name="reg_batch_id" required=required class="form-control input-md" type="text" value=" <?php echo $rec['batch_id']; ?> ">
+		<?php 
+								  }?>
+	
+		
+
   </div>
   
   <label class="control-label col-md-2"  for="reg_paymentStatus">Payment Status</label>  

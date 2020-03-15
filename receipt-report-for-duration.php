@@ -110,7 +110,7 @@ include 'include/param.php';
  <div class="col-sm-4">
       <div class="input-group input-append date" id="datePicker">     
       <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
-      <input class="form-control" required=required placeholder="yy-mm-dd" name="searchtext1" id="datepick1" type="text" value="<?php if(isset($_POST['searchtext1'])){ echo substr($_POST['searchtext1'],0,10);}?>">
+      <input class="form-control" required=required placeholder="yyyy-mm-dd" name="searchtext1" id="datepick1" type="text" autocomplete="off" value="<?php if(isset($_POST['searchtext1'])){ echo substr($_POST['searchtext1'],0,10);}?>">
             </div>
       </div>
 		
@@ -120,7 +120,8 @@ include 'include/param.php';
 		<div class="col-sm-4">
       <div class="input-group input-append date" id="datePicker">     
       <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
-      <input class="form-control" required=required placeholder="yy-mm-dd" name="searchtext2"  id="datepick2" type="text" value="<?php if(isset($_POST['searchtext2'])){ echo substr($_POST['searchtext2'],0,10);}?>">
+      <input class="form-control" required=required placeholder="yyyy-mm-dd" name="searchtext2"  id="datepick2" type="text"
+       autocomplete="off" value="<?php if(isset($_POST['searchtext2'])){ echo substr($_POST['searchtext2'],0,10);}?>">
             </div>
       </div>
 	

@@ -7,6 +7,7 @@ checksession();
 $debug=true ;
 if(isset($_POST['a_submit']))
 {
+	$email_receipt = 'Y' ;  // Email to User - Y/N 
 	$rct_no=$_POST['rct_no'];
 	$date=$_POST['date'];
 	$reg= $_POST['reg'];
@@ -20,7 +21,7 @@ if(isset($_POST['a_submit']))
 	
 	$insert_qry="insert into tbl_receipt(rct_date,rct_no,reg_no,amt_receipt,rct_mode,inst_bank_name,inst_num,inst_date,narr_txt, crtd_by) values('$date','$rct_no','$reg','$amt_paid','$mode','$bank','$ins_no'," . ($ins_date==NULL ? "NULL" : "'$ins_date'") . ",'$narr','$user') " ;
  
-   // if ($debug)  echo $insert_qry ;	
+    if ($debug)  echo $insert_qry ;	
 	$result= mysqli_query($conn,$insert_qry) ;
 	
 	if ($result==false){
@@ -29,12 +30,16 @@ if(isset($_POST['a_submit']))
 		die($error) ;
 	}
     $id = mysqli_insert_id($conn); 
+	if ($email_receipt == 'Y') {
+          include 'receipt-email.php' ;
+   }
+	
 }
-$qry = "SELECT max(rct_no) FROM tbl_receipt where (select max(rct_no) from tbl_receipt)" ;
+$qry = "SELECT max(rct_no) FROM tbl_receipt" ;
 //echo $qry;
 $sql = mysqli_query($conn, $qry);
 $row = mysqli_fetch_array($sql);
- 
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -132,6 +137,9 @@ function fetch_select(val)
   document.getElementById("add").value=response[0].cur_add; 
   document.getElementById("crs").value=response[0].course_name; 
   document.getElementById("crs_fee").value=response[0].course_fee; 
+  document.getElementById("p_till").value=response[1].paid_amount;
+  document.getElementById("email").value=response[0].user_name;
+	 
  }
  });
 }
@@ -163,7 +171,7 @@ function fetch_select(val)
 	<h2 class="text-primary text-center" style=" margin-top:100px;">Add Receipt</h2>
 	</div>
 	
-<form class="form-horizontal" style="margin-left:10%; margin-bottom:46px;" method="POST" onSubmit="return validateForm(this)">
+<form class="form-horizontal" style="margin-left:10%; margin-bottom:46px;" method="POST" onSubmit="return validateForm(this)" >
 <div class="form-group row">
 <label class="control-label col-md-2"  for="rct_no">Receipt No<span style="color:red">*</span></label>  
   <div class="col-md-3">
@@ -184,35 +192,45 @@ function fetch_select(val)
  
    <label class="control-label col-md-2"  for="name">Name</label>  
   <div class="col-md-3">
-	<input  name="name" id="name" class="form-control input-md" type="text" readonly value="" />
+	<input  name="name" id="name" class="form-control input-md" type="text"  readonly value="" />
   </div>
   
  
 </div>
-
-<div class="form-group row">
+	
+	<div class="form-group row">
  <label class="col-md-2 control-label" for="address">Address</label>  
   <div class="col-md-3">
-	<textarea name="address" id="add" class="form-control input-md" readonly></textarea>
+	<textarea name="address" id="add"  class="form-control input-md" readonly></textarea>
   </div>
-  <label class="col-md-2 control-label" for="course">Course</label>  
+  <label class="col-md-2 control-label" for="email">Email</label>  
+  <div class="col-md-3">
+	<input  name="email" id="email" class="form-control input-md" type="text" readonly>
+  </div>
+
+ 
+</div>
+	
+
+<div class="form-group row">
+ <label class="col-md-2 control-label" for="course">Course</label>  
   <div class="col-md-3">
 	<input  name="course" id="crs" class="form-control input-md" type="text" readonly>
+  </div>
+ <label class="col-md-2 control-label" for="amount">Course Fee</label>  
+  <div class="col-md-3">
+	<input  name="amount" id="crs_fee" readonly class="form-control input-md" type="text">
   </div>
 
  
 </div>
 
 <div class="form-group row">
-<label class="col-md-2 control-label" for="amount">Course Fee</label>  
+<label class="col-md-2 control-label" for="p_till">Paid Till</label>  
   <div class="col-md-3">
-	<input  name="amount" id="crs_fee" readonly class="form-control input-md" type="text">
+	<input  name="p_till" id="p_till" readonly class="form-control input-md" type="text">
   </div>
-
- <label class="col-md-2 control-label" for="p_till">Paid Till</label>  
-  <div class="col-md-3">
-	<input  name="p_till" readonly class="form-control input-md" type="text">
-  </div>
+ 
  
 </div>
 <div class="form-group row">
@@ -264,9 +282,11 @@ function fetch_select(val)
     <input type="reset"  name="Reset" class="btn" value="Reset" onClick="window.location.reload()" style="padding:10px 7%;"/>
 	</div>
 </div>
+	
+	
 </form>
 
-</div>
+
 
 	<div style="position:flex;">
 		<?php include("footer.inc.php"); ?>

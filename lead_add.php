@@ -236,7 +236,7 @@ function isNumber(evt) {
 	<input  name="c_email" id="c_email" class="form-control input-md" type="email" value="<?php if ($existing_record) echo $row['email'];?>">
   </div>
 
- <label class="control-label col-md-2" for="c_source">Query Source<span style="color:red">*</span></label>  
+ <label class="control-label col-md-2" for="c_source">Lead Source<span style="color:red">*</span></label>  
   <div class="col-md-3">
 	<select class="form-control" name="c_source" required=required>
 		<?php 
@@ -250,7 +250,7 @@ function isNumber(evt) {
 </div>
 
 <div class="form-group row">
-  <label class="control-label col-md-2" for="c_qry_type">Query Type<span style="color:red">*</span></label>  
+  <label class="control-label col-md-2" for="c_qry_type">Lead Type<span style="color:red">*</span></label>  
   <div class="col-md-3">
 	<select class="form-control" name="c_qry_type" required=required>
 	<?php 
@@ -269,11 +269,11 @@ function isNumber(evt) {
 </div>
 
 <div class="form-group row">
-  <label class="control-label col-md-2"  for="c_date">Query Date<span style="color:red">*</span></label>  
+  <label class="control-label col-md-2"  for="c_date">Lead Date<span style="color:red">*</span></label>  
   <div class="col-md-3">
 	<input id="todaydate" name="c_date" required=required  class="form-control input-md datepick" type="text">
   </div>
-  <label class="control-label col-md-2"  for="c_time">Query Time<span style="color:red">*</span></label>  
+  <label class="control-label col-md-2"  for="c_time">Lead Time<span style="color:red">*</span></label>  
   <div class="col-md-3">
 	<input id="todaytime" name="c_time" required=required class="form-control input-md timepick" type="text">
   </div>
@@ -281,7 +281,7 @@ function isNumber(evt) {
 </div>
       
     <div class="form-group row">
-         <label class="col-md-2 control-label" for="c_distict">Remark<span style="color:red">*</span></label>  
+         <label class="col-md-2 control-label" for="c_remark">Remark<span style="color:red">*</span></label>  
   <div class="col-md-8">
 <input name="c_remark" id="c_remark" class="form-control input-md" type="text">
   </div>
@@ -296,7 +296,16 @@ function isNumber(evt) {
   
   <label class="col-md-2 control-label" for="indus_seg">Industry Segment</label>  
   <div class="col-md-3">
-	<input  name="indus_seg" id="indus_seg" class="form-control input-md" type="text" value="<?php if ($existing_record) echo $row['indus_seg'];?>">
+	<!--<input  name="indus_seg" id="indus_seg" class="form-control input-md" type="text" value="<?php //if ($existing_record) echo $row['indus_seg'];?>">-->
+	  
+	  <select class="form-control" name="indus_seg" required=required>
+	<?php 
+	 for ($i=0;$i<count($industry_segment); $i++)
+	 {
+		 echo "<option value='$industry_segment[$i]'>$industry_segment[$i]</option>" ;
+	 }
+		?>
+	</select>
   </div>
 
 </div>
@@ -336,6 +345,24 @@ function isNumber(evt) {
 	<input name="c_distict" id="c_distict" class="form-control input-md" type="text">
   </div>
     </div>
+	
+	<div class="form-group row">
+<label class="col-md-2 control-label" for="c_state">State<span style="color:red">*</span></label>  
+  <div class="col-md-3">
+	<input name="c_state" id="c_state" class="form-control input-md" type="text">
+  </div>
+  <label class="col-md-2 control-label" for="c_pincode">Pin_code<span style="color:red">*</span></label>  
+  <div class="col-md-3">
+	<input name="c_pincode" id="c_pincode" class="form-control input-md" type="text">
+  </div>
+    </div>
+	
+	<div class="form-group row">
+<label class="col-md-2 control-label" for="c_country">Country<span style="color:red">*</span></label>  
+  <div class="col-md-3">
+	<input name="c_country" id="c_country" class="form-control input-md" type="text">
+  </div>
+  </div>
   
         
 
@@ -396,6 +423,9 @@ $sector=$_POST['c_sector'];
 $market=$_POST['c_market'];
 $city=$_POST['c_city'];
 $distict=$_POST['c_distict'];
+$state=$_POST['c_state'];
+$pin_code=$_POST['c_pincode'];
+$country=$_POST['c_country'];
 $remark=$_POST['c_remark']; 
 $qry=$_POST['c_qry'];
 $date=$_POST['c_date'];
@@ -408,7 +438,7 @@ $indus_subseg=$_POST['indus_subseg'];
 $created_by=$_SESSION['login'];
 
 
-$insert_sql = "insert into lead_log (qry_type,qry_source,name,add_street,add_sector,add_market,add_city,add_distict,lead_remark,emailID,phone_no,qry_details,req_dtm,ip_add, comp_name, indus_seg,indus_subseg,created_by) values('$type','$source','$name','$street','$sector','$market','$city','$distict','$remark','$email','$mob','$qry','$dtm','$_SERVER[REMOTE_ADDR]','$comp','$indus_seg','$indus_subseg','$created_by'
+$insert_sql = "insert into lead_log (qry_type,qry_source,name,add_street,add_sector,add_market,add_city,add_distict,state,pin_code,country,lead_remark,emailID,phone_no,qry_details,req_dtm,ip_add, comp_name, indus_seg,indus_subseg,created_by) values('$type','$source','$name','$street','$sector','$market','$city','$distict','$state','$pin_code','$country','$remark','$email','$mob','$qry','$dtm','$_SERVER[REMOTE_ADDR]','$comp','$indus_seg','$indus_subseg','$created_by'
 ) " ;
 
 echo $insert_sql ;
